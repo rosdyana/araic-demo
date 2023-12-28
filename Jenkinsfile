@@ -20,7 +20,7 @@ pipeline {
 
     stage('Deploy with PM2') {
       steps {
-        sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+        sh 'pm2 delete DemoARAIC && pm2 --name DemoARAIC start npm -- start && pm2 save -f'
       }
     }
 
