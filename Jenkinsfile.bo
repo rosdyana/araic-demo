@@ -25,5 +25,11 @@ pipeline {
       }
     }
 
+    stage('Mail Notification') {
+      steps {
+        emailext(subject: '$DEFAULT_SUBJECT', body: '$DEFAULT_CONTENT', to: 'rosdyana.kusuma@gmail.com')
+      }
+    }
+
   }
 }
