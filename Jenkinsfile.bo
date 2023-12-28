@@ -8,20 +8,20 @@ pipeline {
   stages {
     stage('Install Dependencies') {
       steps {
-        sh 'npm install'
+        sh '~/.bun/bin/bun install'
       }
     }
 
     stage('Build') {
       steps {
-        sh 'npm run build'
+        sh '~/.bun/bin/bun run build'
       }
     }
 
     stage('Deploy with PM2') {
       steps {
         sh 'pm2 delete DemoARAIC || true'
-        sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+        sh 'pm2 --name DemoARAIC start ~/.bun/bin/bun -- start && pm2 save -f'
       }
     }
 
