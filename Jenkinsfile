@@ -7,6 +7,7 @@ pipeline {
 
   options {
     skipDefaultCheckout(true)
+    copyArtifactPermission(env.BRANCH_NAME)
   }
 
   environment {
