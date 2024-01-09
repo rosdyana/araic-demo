@@ -51,7 +51,7 @@ pipeline {
         stage('Deploy to Staging') {
           when {
             expression {
-              env.BRANCH_NAME == 'stage'
+              env.BRANCH_NAME != 'main'
             }
           }
           agent { label 'taichung' }
@@ -66,7 +66,7 @@ pipeline {
               ),
               target: '/root/app/demo'
             )
-            cd '/root/app/demo'
+            sh 'cd /root/app/demo'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
           }
@@ -89,7 +89,7 @@ pipeline {
               ),
               target: '/root/app/demo'
             )
-            cd '/root/app/demo'
+            sh 'cd /root/app/demo'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
           }
@@ -112,7 +112,7 @@ pipeline {
               ),
               target: '/root/app/demo'
             )
-            cd '/root/app/demo'
+            sh 'cd /root/app/demo'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
           }
