@@ -65,7 +65,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install --production'
+              sh 'bun install'
               sh 'pm2 delete DemoARAIC || true'
               sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
             }
@@ -88,7 +88,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install --production'
+              sh 'bun install'
               sh 'pm2 delete DemoARAIC || true'
               sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
             }
@@ -111,7 +111,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install --production'
+              sh 'bun install'
               sh 'pm2 delete DemoARAIC || true'
               sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
             }
