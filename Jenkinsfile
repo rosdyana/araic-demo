@@ -10,8 +10,8 @@ pipeline {
   }
 
   environment {
-    currentJobName = "${env.JOB_NAME}"
-    currentBuildNumber = "${env.BUILD_NUMBER}"
+    artifactPaths = '.next/**,package.json,package-lock.json'
+    deployDir = '/root/app/demo'
   }
 
   stages {
@@ -40,8 +40,7 @@ pipeline {
       steps {
         script {
           echo 'Archiving the artifacts...'
-          def artifactPaths = '.next/**,package.json,package-lock.json'
-          archiveArtifacts artifacts: artifactPaths, onlyIfSuccessful: true
+          archiveArtifacts artifacts: "${artifactPaths}", onlyIfSuccessful: true
         }
       }
     }
@@ -60,13 +59,12 @@ pipeline {
             echo 'Deploying to staging...'
             copyArtifacts(
               filter: '**',
-              projectName: currentJobName,
-              selector: specific(
-                currentBuildNumber
-              ),
-              target: '/root/app/demo'
+              projectName: env.JOB_NAME,
+              selector: specific(env.BUILD_NUMBER),
+              target: env.deployDir
             )
-            sh 'cd /root/app/demo'
+            sh "cd ${env.deployDir}"
+            sh 'bun install --production'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
           }
@@ -83,13 +81,12 @@ pipeline {
             echo 'Deploying to production...'
             copyArtifacts(
               filter: '**',
-              projectName: currentJobName,
-              selector: specific(
-                currentBuildNumber
-              ),
-              target: '/root/app/demo'
+              projectName: env.JOB_NAME,
+              selector: specific(env.BUILD_NUMBER),
+              target: env.deployDir
             )
-            sh 'cd /root/app/demo'
+            sh "cd ${env.deployDir}"
+            sh 'bun install --production'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
           }
@@ -106,13 +103,12 @@ pipeline {
             echo 'Deploying to production...'
             copyArtifacts(
               filter: '**',
-              projectName: currentJobName,
-              selector: specific(
-                currentBuildNumber
-              ),
-              target: '/root/app/demo'
+              projectName: env.JOB_NAME,
+              selector: specific(env.BUILD_NUMBER),
+              target: env.deployDir
             )
-            sh 'cd /root/app/demo'
+            sh "cd ${env.deployDir}"
+            sh 'bun install --production'
             sh 'pm2 delete DemoARAIC || true'
             sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
           }
