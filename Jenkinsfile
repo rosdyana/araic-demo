@@ -1,29 +1,123 @@
 pipeline {
   agent {
     node {
-      label 'agent001'
+      label 'master'
+    }
+  }
+
+  options {
+    skipDefaultCheckout(true)
+  }
+
+  environment {
+    currentJobName = "${env.JOB_NAME}"
+    currentBuildNumber = "${env.BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        echo 'checking out source code...'
+        checkout scm
+      }
     }
 
-  }
-  stages {
     stage('Install Dependencies') {
       steps {
-        sh 'npm install'
+        echo 'Installing dependencies...'
+        sh 'bun install production'
       }
     }
 
     stage('Build') {
       steps {
-        sh 'npm run build'
+        echo 'Building...'
+        sh 'bun run build'
       }
     }
 
-    stage('Deploy with PM2') {
+    stage('Archive the artifacts') {
       steps {
-        sh 'pm2 delete DemoARAIC || true'
-        sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+        script {
+          echo 'Archiving the artifacts...'
+          def artifactPaths = '.next/**,package.json,package-lock.json'
+          archiveArtifacts artifacts: artifactPaths, onlyIfSuccessful: true
+        }
       }
     }
 
+    stage('Deployment') {
+      parallel {
+        stage('Deploy to Staging') {
+          when {
+            expression {
+              env.BRANCH_NAME == 'stage'
+            }
+          }
+          agent { label 'taichung' }
+
+          steps {
+            echo 'Deploying to staging...'
+            copyArtifacts(
+              filter: '**',
+              projectName: currentJobName,
+              selector: specific(
+                currentBuildNumber
+              ),
+              target: '/root/app/demo'
+            )
+            cd '/root/app/demo'
+            sh 'pm2 delete DemoARAIC || true'
+            sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
+          }
+        }
+
+        stage('Deploy to Production - 1') {
+          when {
+            expression {
+              env.BRANCH_NAME == 'main'
+            }
+          }
+          agent { label 'tainan' }
+          steps {
+            echo 'Deploying to production...'
+            copyArtifacts(
+              filter: '**',
+              projectName: currentJobName,
+              selector: specific(
+                currentBuildNumber
+              ),
+              target: '/root/app/demo'
+            )
+            cd '/root/app/demo'
+            sh 'pm2 delete DemoARAIC || true'
+            sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
+          }
+        }
+
+        stage('Deploy to Production - 2') {
+          when {
+            expression {
+              env.BRANCH_NAME == 'main'
+            }
+          }
+          agent { label 'kaohsiung' }
+          steps {
+            echo 'Deploying to production...'
+            copyArtifacts(
+              filter: '**',
+              projectName: currentJobName,
+              selector: specific(
+                currentBuildNumber
+              ),
+              target: '/root/app/demo'
+            )
+            cd '/root/app/demo'
+            sh 'pm2 delete DemoARAIC || true'
+            sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
+          }
+        }
+      }
+    }
   }
 }
