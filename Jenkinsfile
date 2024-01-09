@@ -63,10 +63,11 @@ pipeline {
               selector: specific(env.BUILD_NUMBER),
               target: env.deployDir
             )
-            sh "cd ${env.deployDir}"
-            sh 'bun install --production'
-            sh 'pm2 delete DemoARAIC || true'
-            sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            dir(env.deployDir) {
+              sh 'bun install --production'
+              sh 'pm2 delete DemoARAIC || true'
+              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            }
           }
         }
 
@@ -85,10 +86,11 @@ pipeline {
               selector: specific(env.BUILD_NUMBER),
               target: env.deployDir
             )
-            sh "cd ${env.deployDir}"
-            sh 'bun install --production'
-            sh 'pm2 delete DemoARAIC || true'
-            sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            dir(env.deployDir) {
+              sh 'bun install --production'
+              sh 'pm2 delete DemoARAIC || true'
+              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            }
           }
         }
 
@@ -107,10 +109,11 @@ pipeline {
               selector: specific(env.BUILD_NUMBER),
               target: env.deployDir
             )
-            sh "cd ${env.deployDir}"
-            sh 'bun install --production'
-            sh 'pm2 delete DemoARAIC || true'
-            sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            dir(env.deployDir) {
+              sh 'bun install --production'
+              sh 'pm2 delete DemoARAIC || true'
+              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+            }
           }
         }
       }
