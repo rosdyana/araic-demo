@@ -50,7 +50,7 @@ pipeline {
         stage('Deploy to Staging') {
           when {
             expression {
-              env.BRANCH_NAME != 'main'
+              env.BRANCH_NAME == 'stage'
             }
           }
           agent { label 'taichung' }
