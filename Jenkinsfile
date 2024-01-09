@@ -114,7 +114,7 @@ pipeline {
             )
             sh 'cd /root/app/demo'
             sh 'pm2 delete DemoARAIC || true'
-            sh 'pm2 --name DemoARAIC start bun -- start && pm2 save -f'
+            sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
           }
         }
       }
