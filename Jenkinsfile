@@ -25,7 +25,7 @@ pipeline {
     stage('Install Dependencies') {
       steps {
         echo 'Installing dependencies...'
-        sh 'bun install production'
+        sh 'bun install --production'
       }
     }
 
