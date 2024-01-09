@@ -7,6 +7,7 @@ pipeline {
 
   options {
     skipDefaultCheckout(true)
+    copyArtifactPermission(env.BRANCH_NAME)
   }
 
   environment {
@@ -50,7 +51,7 @@ pipeline {
         stage('Deploy to Staging') {
           when {
             expression {
-              env.BRANCH_NAME != 'main'
+              env.BRANCH_NAME == 'stage'
             }
           }
           agent { label 'taichung' }
