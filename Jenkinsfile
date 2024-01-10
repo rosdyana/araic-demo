@@ -1,9 +1,3 @@
-def runDeploymentCommands() {
-  sh 'bun install'
-  sh 'pm2 delete DemoARAIC || true'
-  sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
-}
-
 pipeline {
   agent {
     node {
@@ -119,4 +113,11 @@ pipeline {
       }
     }
   }
+}
+
+def runDeploymentCommands() {
+  sh 'bun install'
+  sh 'lsof -ti:3000 | xargs kill -9 || true'
+  sh 'pm2 delete DemoARAIC || true'
+  sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
 }
