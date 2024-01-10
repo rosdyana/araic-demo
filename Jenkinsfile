@@ -1,3 +1,9 @@
+def runDeploymentCommands() {
+  sh 'bun install'
+  sh 'pm2 delete DemoARAIC || true'
+  sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+}
+
 pipeline {
   agent {
     node {
@@ -55,7 +61,6 @@ pipeline {
             }
           }
           agent { label 'taichung' }
-
           steps {
             echo 'Deploying to staging...'
             copyArtifacts(
@@ -65,9 +70,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install'
-              sh 'pm2 delete DemoARAIC || true'
-              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+              runDeploymentCommands()
             }
           }
         }
@@ -88,9 +91,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install'
-              sh 'pm2 delete DemoARAIC || true'
-              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+              runDeploymentCommands()
             }
           }
         }
@@ -111,9 +112,7 @@ pipeline {
               target: env.deployDir
             )
             dir(env.deployDir) {
-              sh 'bun install'
-              sh 'pm2 delete DemoARAIC || true'
-              sh 'pm2 --name DemoARAIC start npm -- start && pm2 save -f'
+              runDeploymentCommands()
             }
           }
         }
